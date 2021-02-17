@@ -23,10 +23,10 @@
 
 <br />
 <p align="center">
-<!-- PROJECT LOGO
   <a href="https://github.com/Callidus2000/ADGraph">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="doc/img/neural.png" alt="Logo" width="80" height="80">
   </a>
+<!-- PROJECT LOGO
 -->
 
   <h3 align="center">ADGraph Powershell Module</h3>
@@ -187,6 +187,7 @@ Project Link: [https://github.com/Callidus2000/ADGraph](https://github.com/Calli
 ## Acknowledgements
 
 * [Friedrich Weinmann](https://github.com/FriedrichWeinmann) for his marvelous [PSModuleDevelopment](https://github.com/PowershellFrameworkCollective/PSModuleDevelopment) and [psframework](https://github.com/PowershellFrameworkCollective/psframework)
+* Icons  made by [Becris](https://www.flaticon.com/authors/becris) from [www.flaticon.com](https://www.flaticon.com/)
 
 
 
