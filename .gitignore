@@ -1,0 +1,22 @@
+﻿
+# ignore the settings folder and files for VSCode and PSS
+.vscode/*
+*.psproj
+*TempPoint*
+
+# Ignore staging info from Visual Studio
+library/ADGraph/.vs/*
+library/ADGraph/ADGraph/bin/*
+library/ADGraph/ADGraph/obj/*
+
+# ignore PowerShell Studio MetaData
+ADGraph/ADGraph.psproj
+ADGraph/ADGraph.psproj.bak
+ADGraph/ADGraph.psprojs
+ADGraph/ADGraph.psproj
+
+# ignore the TestResults
+TestResults/*
+
+# ignore the publishing Directory
+publish/*
