@@ -23,9 +23,9 @@
         [ADGraphNode]$Node,
         [ADGraphEdge]$Edge
     )
-    Write-PSFMessage "Formatting $attrString"
     if ($Node) {
         $attrString = $node.GetAttrString()
+        Write-PSFMessage "Formatting with `$attrString $attrString" -Level Debug
         if ($attrString -match 'ObjectClass=user') {
             $node.attributes.Add("shape", "record")
             $node.nodeType = "User"
@@ -53,6 +53,7 @@
     }
     if ($Edge) {
         $attrString = $Edge.GetAttrString()
+        Write-PSFMessage "Formatting with `$attrString $attrString" -Level Debug
         # if ($attrString -match 'ObjectClass=user') {
         #     $node.attributes.Add("shape", "record")
         #     $label = "$($node.attributes.label)|$($node.baseObj.DisplayName)"
