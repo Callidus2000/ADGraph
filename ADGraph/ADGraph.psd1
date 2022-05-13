@@ -3,7 +3,7 @@
 	RootModule        = 'ADGraph.psm1'
 
 	# Version number of this module.
-	ModuleVersion     = '1.0.1'
+	ModuleVersion     = '1.0.3'
 
 	# ID used to uniquely identify this module
 	GUID              = '17ffe655-33f2-4567-a3f1-ecccfac9fe4e'
@@ -29,7 +29,7 @@
 		@{ ModuleName = 'PSGraph'; ModuleVersion = '2.1.38.27' }
 		@{ ModuleName = 'PSFramework'; ModuleVersion = '1.4.149' }
 		@{ ModuleName = 'ActiveDirectory'; ModuleVersion = '1.0.0' }
-		@{ ModuleName = 'PSExcel'; ModuleVersion = '1.0.2' }
+		@{ ModuleName = 'ImportExcel'; ModuleVersion = '7.4.0' }
 	)
 
 	# Assemblies that must be loaded prior to importing this module
