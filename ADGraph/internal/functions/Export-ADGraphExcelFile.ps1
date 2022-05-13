@@ -44,7 +44,7 @@
         catch {
             Write-PSFMessage "Error while extracting Excel-Data"
         }
-        $excelContent | Export-XLSX  $Path  -WorksheetName "Hierarchy $((Get-Date).toString('yyyy-MM-dd HH-mm'))" -AutoFit -Table
+        $excelContent | Export-Excel -path $Path -WorksheetName "Hierarchy $((Get-Date).toString('yyyy-MM-dd HH-mm'))" -ClearSheet -autosize
         # # Zuordnung aller Node-Objekte zu den Edges
         # $nodeHashTable = @{ }
         # foreach ($node in $nodeObjects) {
