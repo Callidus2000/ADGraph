@@ -41,6 +41,7 @@ function New-ADGraph {
     General notes
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
         [string[]]$Domain,
@@ -110,9 +111,12 @@ function New-ADGraph {
                 $graphOptions.StartObjectDN = ($startObjects | Select-Object -ExpandProperty DistinguishedName)
                 Write-PSFMessage "graphOptions=$($graphOptions|ConvertTo-Json)"
                 $myGraph = New-ADGraphGroupGraph @graphOptions
-                $DistinguishedNameFileNamePart = ($graphOptions.StartObjectDN -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.') -join "_"
+                $nameWithoutExtension = ($startObjects | Select-Object -ExpandProperty DistinguishedName) -join '_' -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.' -replace '\\'
+                $nameWithoutExtension=$nameWithoutExtension.substring(0, [System.Math]::Min(100, $nameWithoutExtension.Length))
+                Write-PSFMessage -Level Host "`$nameWithoutExtension=$nameWithoutExtension"
+
                 # $fileName = "$Path\$($graphOptions.StartObjectDN).pdf" -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.'
-                $fileName = "$Path\$DistinguishedNameFileNamePart.pdf"
+                $fileName = "$Path\$nameWithoutExtension.pdf"
                 Write-PSFMessage "SinglePDF, $fileName"
                 $myGraph | Export-PSGraph -ShowGraph:$ShowPDF -OutputFormat pdf -DestinationPath $fileName -Debug:$false
                 return $fileName
@@ -120,12 +124,15 @@ function New-ADGraph {
             "MultiPDF" {
                 $fileNameArray = @()
                 foreach ($startObjectDN in ($startObjects | Select-Object -ExpandProperty DistinguishedName) ) {
-                   $graphOptions.StartObjectDN = $startObjectDN
+                    $graphOptions.StartObjectDN = $startObjectDN
+                    $nameWithoutExtension = "$($graphOptions.StartObjectDN)" -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.' -join "_" -replace '\\'
+                    $nameWithoutExtension=$nameWithoutExtension.substring(0, [System.Math]::Min(100, $nameWithoutExtension.Length))
+
                     Write-PSFMessage "graphOptions=$($graphOptions|ConvertTo-Json)"
                     $myGraph = New-ADGraphGroupGraph @graphOptions
-                    $fileName = "$Path\$startObjectDN.pdf" -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.'
+                    $fileName = "$Path\$nameWithoutExtension.pdf"
                     $myGraph | Export-PSGraph -ShowGraph:$ShowPDF -OutputFormat pdf -DestinationPath $fileName -Debug:$false
-                    $fileNameArray+=$fileName
+                    $fileNameArray += $fileName
                 }
                 return $fileNameArray
             }
@@ -133,7 +140,16 @@ function New-ADGraph {
                 $graphOptions.StartObjectDN = ($startObjects | Select-Object -ExpandProperty DistinguishedName)
                 Write-PSFMessage "graphOptions=$($graphOptions|ConvertTo-Json)"
                 $myGraph = New-ADGraphGroupGraph @graphOptions
-                $fileName = "$Path\$($graphOptions.StartObjectDN).xlsx" -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.'
+                if ($Path -like '*.xlsx') {
+                    Write-PSFMessage "Als Pfad wurde kein Verzeichnis, sondern eine Excel-Datei angegeben, direkte Verwendung."
+                    $fileName = "$Path"
+                }
+                else {
+                    Write-PSFMessage "Als Pfad wurde ein Verzeichnis angegeben ($Path), konstruiere Dateiname"
+                    $nameWithoutExtension = "$($graphOptions.StartObjectDN)" -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.' -replace '\\'
+                    $nameWithoutExtension=$nameWithoutExtension.substring(0, [System.Math]::Min(100, $nameWithoutExtension.Length))
+                    $fileName = "$Path\$nameWithoutExtension.xlsx"
+                }
                 $myGraph | Out-String | Export-ADGraphExcelFile -Path $fileName
                 return $fileName
             }
