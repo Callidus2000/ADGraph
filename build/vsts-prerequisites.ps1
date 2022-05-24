@@ -7,7 +7,7 @@ $modules = @("Pester", "PSFramework", "PSModuleDevelopment", "PSScriptAnalyzer")
 
 # Automatically add missing dependencies
 $data = Import-PowerShellDataFile -Path "$PSScriptRoot\..\ADGraph\ADGraph.psd1"
-foreach ($dependency in $data.RequiredModules) {
+foreach ($dependency in $data.RequiredModules | Where-Object ModuleName -notin @('ActiveDirectory')) {
     if ($dependency -is [string]) {
         if ($modules -contains $dependency) { continue }
         $modules += $dependency
