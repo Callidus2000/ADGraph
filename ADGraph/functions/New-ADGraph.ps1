@@ -35,12 +35,14 @@ function New-ADGraph {
 
     .EXAMPLE
     $graph = Get-ADUser -Identity "jane"| New-ADGraph -Domain "myDomain" -ReturnType "SingleGraph"
+
     Greates a graph for the user Jane
 
     .NOTES
     General notes
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly', '')]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]

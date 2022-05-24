@@ -14,6 +14,7 @@
 
         .EXAMPLE
         New-ADGraphGroupGraph @graphOptions | Out-String | Export-ADGraphExcelFile -Path $fileName
+
         Exports the generated graph to the named Excel-File
 
         .NOTES

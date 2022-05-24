@@ -8,6 +8,7 @@
 
     .EXAMPLE
     Start-ADGraph
+
     Starts the GUI.
 
     .NOTES

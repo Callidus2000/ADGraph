@@ -14,6 +14,7 @@
 
     .EXAMPLE
     Format-ADADGraphNodeObject $node
+
     Formats the $node Object
 
     .NOTES

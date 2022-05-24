@@ -14,6 +14,7 @@
 
     .EXAMPLE
     Get-ADGraphNodeObject -edges (Add-ADGraphEdge -startObjectDN $startObject) -startObjectDN $startObject
+
     Determines the nodes for the $startObject
 
     .NOTES

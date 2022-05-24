@@ -17,6 +17,7 @@
 
     .EXAMPLE
     New-ADGraphGroupGraph -LinkAttribute @("memberOf", "members") -StartObjectDN "CN=joe,OU=Users,DC=mydomain,DC=com"
+
     Gets a grpah from Joe
 
     .NOTES

@@ -11,6 +11,7 @@
 
     .EXAMPLE
     Get-ADGraphElapsedTime -Message "Query AD"
+
     Logs "Query AD" with a timestamp
 
     .NOTES

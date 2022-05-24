@@ -3,7 +3,7 @@
 	RootModule        = 'ADGraph.psm1'
 
 	# Version number of this module.
-	ModuleVersion     = '1.0.3'
+	ModuleVersion     = '1.0.4'
 
 	# ID used to uniquely identify this module
 	GUID              = '17ffe655-33f2-4567-a3f1-ecccfac9fe4e'

@@ -18,6 +18,7 @@
 
     .EXAMPLE
     Add-ADGraphEdge -startObjectDN "CN=joe,OU=Users,DC=mydomain,DC=com"
+
     Queries all relationships of the given user.
 
     .NOTES

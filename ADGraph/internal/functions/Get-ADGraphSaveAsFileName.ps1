@@ -14,6 +14,7 @@
 
     .EXAMPLE
     Get-ADGraphSaveAsFileName -InitialDirectory $env:TEMP
+
     Asks for an Excel filename within the users TEMP directory
 
     .NOTES

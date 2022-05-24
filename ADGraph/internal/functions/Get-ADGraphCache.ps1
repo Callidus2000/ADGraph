@@ -15,6 +15,7 @@
 
     .EXAMPLE
     Get-ADGraphCache -Domain "myDomain" -ReturnType HashTable
+
     Queries all Users/Groups as a HashTable
 
     .NOTES
