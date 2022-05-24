@@ -4,7 +4,7 @@
 )
 
 $modules = @("Pester", "PSFramework", "PSModuleDevelopment", "PSScriptAnalyzer")
-
+Install-WindowsFeature -Name "RSAT-AD-PowerShell" -IncludeAllSubFeature
 # Automatically add missing dependencies
 $data = Import-PowerShellDataFile -Path "$PSScriptRoot\..\ADGraph\ADGraph.psd1"
 foreach ($dependency in $data.RequiredModules | Where-Object ModuleName -notin @('ActiveDirectory')) {
