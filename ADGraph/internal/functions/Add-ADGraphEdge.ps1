@@ -46,6 +46,7 @@
     }
     catch {
         Write-PSFMessage "Could not find attribute $LinkAttribute"
+        return
     }
     foreach ($linkDN in $linkDNlist) {
         $memberObject = $allExistingGroupsAndUsersHash[$linkDN]

@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+## 2.0.1 (2026-05-12)
+- Fix: Edge-Creation
+
 ## 2.0.0 (2026-05-12)
 - New: Added support for foreign domains and credential forwarding across the ADGraph call chain.
 - New: Added direct domain selection support to `Start-ADGraph`, allowing the GUI flow to skip forest-based domain selection.

@@ -28,16 +28,16 @@
     )
     process {
         Write-PSFMessage "Erstelle $Path  Objekten"
-        $Graph |Set-Clipboard
+        $Graph | Set-Clipboard
         try {
-            $excelContent=@()
+            $excelContent = @()
             $pattern = 'CN=([^,]*).*>"CN=([^,]*)'
             $results = $Graph | Select-String $pattern -AllMatches
             foreach ($match in $results.Matches) {
                 $member = $match.Groups[1]
                 $memberOf = $match.Groups[2]
-                $excelContent+=[PSCustomObject]@{
-                    member = $member
+                $excelContent += [PSCustomObject]@{
+                    member   = $member
                     memberOf = $memberOf
                 }
             }
@@ -46,5 +46,5 @@
             Write-PSFMessage "Error while extracting Excel-Data"
         }
         $excelContent | Export-Excel -path $Path -WorksheetName "Hierarchy $((Get-Date).toString('yyyy-MM-dd HH-mm'))" -ClearSheet -autosize
-
+    }
 }
