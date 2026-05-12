@@ -13,9 +13,6 @@
     .PARAMETER Credential
     Optional credentials used for Active Directory access.
 
-    .PARAMETER NoCache
-    Forces a fresh query and bypasses cached values.
-
     .PARAMETER ReturnType
     Should the array of all users and groups be returned or the Indexed HashTable?
 
@@ -32,7 +29,6 @@
         [Parameter(Mandatory = $true)]
         [string[]]$Domain,
         [PSCredential]$Credential,
-        [switch]$NoCache,
         [ValidateSet("Array", "HashTable")]
         [Parameter(Mandatory = $true)]
         $ReturnType
