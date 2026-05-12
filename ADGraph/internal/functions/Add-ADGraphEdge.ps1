@@ -10,6 +10,9 @@
     .PARAMETER StartObjectDN
     The DistinguishedName of the object which should be inspected.
 
+    .PARAMETER Credential
+    Optional credentials used for Active Directory access.
+
     .PARAMETER RecursionLevel
     FailSafe for detection of circle relationships.
 
@@ -28,6 +31,7 @@
     param (
         [Parameter(Mandatory=$true)]
         $StartObjectDN,
+        [PSCredential]$Credential,
         $RecursionLevel = 0,
         [ValidateSet("memberOf", "members")]
         $LinkAttribute = "memberOf"
@@ -75,7 +79,7 @@
             $newEdges += $currentEdge
         }
         try {
-            $newEdges += Add-ADGraphEdge -startObjectDN $linkDN -recursionLevel ($RecursionLevel + 1) -linkAttribute $LinkAttribute
+            $newEdges += Add-ADGraphEdge -StartObjectDN $linkDN -Credential $Credential -RecursionLevel ($RecursionLevel + 1) -LinkAttribute $LinkAttribute
         }
         catch [ADGraphCircleException] {
             $circleError = $PSItem.Exception

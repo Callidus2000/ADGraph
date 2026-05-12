@@ -6,6 +6,12 @@
     .DESCRIPTION
     Starts a simple GUI for creating ADGraphs.
 
+    .PARAMETER Domain
+    Optional domain to use directly instead of selecting it from the forest.
+
+    .PARAMETER Credential
+    Optional credentials used for Active Directory access.
+
     .EXAMPLE
     Start-ADGraph
 
@@ -18,29 +24,43 @@
     [CmdletBinding()]
 
     param(
-
+        [string]$Domain,
+        [PSCredential]$Credential
     )
 
-    # Which domain should be focused?
-    $allDomains = (get-adforest).domains
+    $allDomains = @()
+    if ($Domain) {
+        $allDomains = @($Domain)
+    }
+    else {
+        # Which domain should be focused?
+        $getADForestParameters = @{}
+        if ($Credential) {
+            $getADForestParameters.Credential = $Credential
+        }
+        $allDomains = (Get-ADForest @getADForestParameters).domains
+    }
     # Loop infinitely, script can be closed by clicking cancel on any dialog
     while ($true) {
-        $chosenDomain = $allDomains | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.ChooseDomain") -outputmode single
-        if ($null -eq $chosenDomain) {
-            Write-PSFMessage -Level Host -String 'Start-ADGraph.NoInput' -StringValues "Domain"
-            return
+        $chosenDomain = $Domain
+        if (-not $chosenDomain) {
+            $chosenDomain = $allDomains | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.ChooseDomain") -outputmode single
+            if ($null -eq $chosenDomain) {
+                Write-PSFMessage -Level Host -String 'Start-ADGraph.NoInput' -StringValues "Domain"
+                return
+            }
         }
-        $allExistingGroupsAndUsers = Get-ADGraphCache -Domain $chosenDomain -ReturnType Array
+        $allExistingGroupsAndUsers = Get-ADGraphCache -Domain $chosenDomain -Credential $Credential -ReturnType Array
 
         $possibleOptions = [ordered] @{
-            "Mode: Default"                   = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Default')
-            "Mode: Compare 2 Objects"         = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Compare-2-Objects')
-            "Mode: Multi-Object>One PDF"      = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Multi-Object-One-PDF')
-            "Mode: Multi-Object>Multi-PDF"    = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Multi-Object-Multi-PDF')
-            "Mode: Create Test-XLSX"          = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Create-Test-XLSX')
-            "Option: Visualize MemberOf only" = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Option-Visualize-MemberOf-only')
-            "Option: Visualize Members only"  = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Option-Visualize-Members-only')
-            "Option: No User"                 = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Option-No-User')
+            "Mode: Default"                   = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Default')
+            "Mode: Compare 2 Objects"         = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Compare-2-Objects')
+            "Mode: Multi-Object>One PDF"      = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Multi-Object-One-PDF')
+            "Mode: Multi-Object>Multi-PDF"    = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Multi-Object-Multi-PDF')
+            "Mode: Create Test-XLSX"          = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Mode-Create-Test-XLSX')
+            "Option: Visualize MemberOf only" = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Option-Visualize-MemberOf-only')
+            "Option: Visualize Members only"  = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Option-Visualize-Members-only')
+            "Option: No User"                 = (Get-PSFLocalizedString -Module 'ADGraph' -Name 'Start-ADGraph.OptionGrid.Option-No-User')
         }
 
         $options = $possibleOptions | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.ChooseOptions") -OutputMode Multiple | Select-Object -ExpandProperty Name
@@ -56,17 +76,20 @@
             Users             = $true
             ReturnType        = "SinglePDF"
         }
+        if ($Credential) {
+            $newADGraphOptions.Credential = $Credential
+        }
         # Hinterlegung, in welche Richtung Beziehungen nachverfolgt werden sollen
-            if ($options.contains("Option: Visualize Members only" )) {
+            if ($options.contains("Option: Visualize Members only" )) {
                 $newADGraphOptions.MemberOf=$false
             }
-            if ($options.contains("Option: Visualize MemberOf only" )) {
+            if ($options.contains("Option: Visualize MemberOf only" )) {
                 $newADGraphOptions.Members=$false
             }
-        if ($options.contains("Option: No User")) {
+        if ($options.contains("Option: No User")) {
             $newADGraphOptions.Users = $false
         }
-        if ($options.contains("Mode: Compare 2 Objects")) {
+        if ($options.contains("Mode: Compare 2 Objects")) {
             # Vergleichs Verfahren, 2 Startobjekte
             $startObjectFirst = $allExistingGroupsAndUsers | Select-Object -Property DistinguishedName, DisplayName | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.CompareFirstObject") -OutputMode Single
             $startObjectSecond = $allExistingGroupsAndUsers | Select-Object -Property DistinguishedName, DisplayName | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.CompareSecondObject" ) -OutputMode Single
@@ -80,7 +103,7 @@
             # $fileName = "$($env:temp)\Compare-$($startObjectFirst.DistinguishedName)-with-$($startObjectSecond.DistinguishedName).pdf" -replace 'CN=([^,]*),.*?,DC=', '$1-' -replace ',DC=', '.'
             # $myGraph | Export-PSGraph -ShowGraph -OutputFormat pdf -DestinationPath $fileName -Debug:$false
         }
-        elseif ($options.contains("Mode: Multi-Object>One PDF")) {
+        elseif ($options.contains("Mode: Multi-Object>One PDF")) {
             $startObjects = $allExistingGroupsAndUsers | Select-Object -Property DistinguishedName, DisplayName | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.CompareXobjects") -OutputMode Multiple | Select-Object -ExpandProperty DistinguishedName
             if (($null -eq $startObjects) ) {
                 Write-PSFMessage -Level Host -String 'Start-ADGraph.NoInput' -StringValues "startObject"
@@ -92,7 +115,7 @@
             # $fileName = "$($env:temp)\Visualize-$($startObjects.count)-objects.pdf"
             # $myGraph | Export-PSGraph -ShowGraph -OutputFormat pdf -DestinationPath $fileName -Debug:$false
         }
-        elseif ($options.contains("Mode: Multi-Object>Multi-PDF")) {
+        elseif ($options.contains("Mode: Multi-Object>Multi-PDF")) {
             $newADGraphOptions.ReturnType = "MultiPDF"
             # Beliebig viele Startobjekte, das Ergebnis wird in eine PDF je Objekt gepackt
             $startObjectDNs = $allExistingGroupsAndUsers | Select-Object -Property DistinguishedName, DisplayName | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.CompareXobjects") -OutputMode Multiple | Select-Object -ExpandProperty DistinguishedName
@@ -110,7 +133,7 @@
             #     $myGraph | Export-PSGraph -ShowGraph -OutputFormat pdf -DestinationPath $fileName -Debug:$false
             # }
         }
-        elseif ($options.contains("Mode: Create Test-XLSX")) {
+        elseif ($options.contains("Mode: Create Test-XLSX")) {
             $newADGraphOptions.ReturnType = "ExcelFile"
             $startObject = $allExistingGroupsAndUsers | Select-Object -Property DistinguishedName, DisplayName | Out-GridView -Title (Get-PSFLocalizedString -Module "ADGraph" -Name "Start-ADGraph.ChooseStartobject") -OutputMode Single
             if ($null -eq $startObject) {

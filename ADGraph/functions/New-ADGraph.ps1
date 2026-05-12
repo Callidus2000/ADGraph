@@ -12,6 +12,9 @@ function New-ADGraph {
     .PARAMETER Domain
     Which domain should be inspected? Used as a connection server.
 
+    .PARAMETER Credential
+    Optional credentials used for Active Directory access.
+
     .PARAMETER DistinguishedName
     The DN of the user or group which should be used as a starting point
 
@@ -46,7 +49,8 @@ function New-ADGraph {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string[]]$Domain,
+        [string]$Domain,
+        [PSCredential]$Credential,
         [Alias('DN')]
         [parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [string[]]$DistinguishedName,
@@ -66,15 +70,19 @@ function New-ADGraph {
             StartObjectDN = @()
             RemoveUsers   = ($Users -eq $false)
             linkAttribute = @()
+            Credential    = $Credential
         }
-        $allExistingGroupsAndUsersHash = Get-ADGraphCache -Domain $Domain -ReturnType HashTable
+        $allExistingGroupsAndUsersHash = Get-ADGraphCache -Domain $Domain -Credential $Credential -ReturnType HashTable
+
+        # $newADGraphGroupGraphParameters = $graphOptions.Clone()
+        # if ($Credential) {
+        #     $newADGraphGroupGraphParameters.Credential = $Credential
+        # }
 
         $startObjects = @()
     }
     process {
-        if ($Verbose) {
-            $VerbosePreference = "Continue"
-        }
+        Save-ContextCache -Name "StartObjectDN" -CurrentVariables (get-variable -Scope Local)
         Write-PSFMessage "PROCESS: DistinguishedName=$DistinguishedName"
         # $graphOptions.StartObjectDN+=$DistinguishedName
         $startObjects += ($DistinguishedName | foreach-object { $allExistingGroupsAndUsersHash[$_] })

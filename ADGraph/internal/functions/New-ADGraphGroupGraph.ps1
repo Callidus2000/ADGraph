@@ -9,6 +9,9 @@
     .PARAMETER StartObjectDN
     The DistinguishedName of the object which should be inspected.
 
+    .PARAMETER Credential
+    Optional credentials used for Active Directory access.
+
     .PARAMETER LinkAttribute
     Should be members/memberOf be followed?
 
@@ -28,12 +31,14 @@
     param (
         [Parameter(Mandatory)]
         [String[]]$StartObjectDN,
+        [PSCredential]$Credential,
         [Parameter(Mandatory = $false)]
         [ValidateSet("memberOf", "members")]
         [String[]]$LinkAttribute = "memberOf",
         [switch]$RemoveUsers
     )
     Write-PSFMessage "Erstelle neuen Graphen, Start-Objekte: $($StartObjectDN -join ';'), LinkAttribute $($LinkAttribute -join ';'), RemoveUsers=$RemoveUsers"
+    Write-PSFMessage "Credential User=$($Credential.UserName)" -Level Debug
     # Zählen, wie viele Start-Objekte verwendet werden sollen
     $measurement = $startObjectDN | Measure-Object
     if ($measurement.Count -eq 2) {
@@ -49,7 +54,7 @@
         $edgeObjects = @()
         foreach ($linkAttr in $LinkAttribute) {
             try {
-                $edgeObjects += Add-ADGraphEdge -startObjectDN $startObject -linkAttribute $linkAttr
+                $edgeObjects += Add-ADGraphEdge -StartObjectDN $startObject -Credential $Credential -LinkAttribute $linkAttr
             }
             catch [ADGraphCircleException] {
                 $circleError = $PSItem.Exception

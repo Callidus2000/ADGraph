@@ -3,7 +3,7 @@
 	RootModule        = 'ADGraph.psm1'
 
 	# Version number of this module.
-	ModuleVersion     = '1.0.4'
+	ModuleVersion     = '2.0.0'
 
 	# ID used to uniquely identify this module
 	GUID              = '17ffe655-33f2-4567-a3f1-ecccfac9fe4e'
@@ -12,13 +12,13 @@
 	Author            = 'Sascha Spiekermann'
 
 	# Company or vendor of this module
-	#CompanyName = 'MyCompany'
+	CompanyName       = 'Callidus2000'
 
 	# Copyright statement for this module
 	Copyright         = 'Copyright (c) 2021 Sascha Spiekermann'
 
 	# Description of the functionality provided by this module
-	Description       = 'ADVisual'
+	Description       = 'Visualizes Active Directory membership relations with GUI and command-line workflows using PSGraph, including PDF and Excel export.'
 
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.1'
@@ -69,7 +69,7 @@
 		PSData = @{
 
 			# Tags applied to this module. These help with module discovery in online galleries.
-			# Tags = @()
+			Tags                       = @('ActiveDirectory', 'GraphViz', 'PSGraph', 'Visualization', 'GroupMembership', 'RSAT')
 
 			# A URL to the license for this module.
 			LicenseUri                 = 'https://github.com/Callidus2000/ADGraph/blob/master/LICENSE'
@@ -78,12 +78,12 @@
 			ProjectUri                 = 'https://github.com/Callidus2000/ADGraph/'
 
 			# A URL to an icon representing this module.
-			IconUri                    = ''
+			IconUri                    = 'https://raw.githubusercontent.com/Callidus2000/ADGraph/master/doc/img/neural.png'
 
 			# ReleaseNotes of this module
-			ReleaseNotes               = ''
+			ReleaseNotes               = 'Provides GUI and command-line visualization of nested Active Directory group memberships and supports PDF and Excel export.'
 
-			ExternalModuleDependencies = @('ActiveDirectory')
+			ExternalModuleDependencies = @('ActiveDirectory', 'PSFramework', 'PSGraph', 'ImportExcel')
 
 		} # End of PSData hashtable
 
