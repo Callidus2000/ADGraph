@@ -89,7 +89,7 @@ This module provides all this.
 * [PSModuleDevelopment](https://github.com/PowershellFrameworkCollective/PSModuleDevelopment)
 * [psframework](https://github.com/PowershellFrameworkCollective/psframework)
 * [PSGraph](https://github.com/KevinMarquette/PSGraph/)
-* [PSExcel](https://github.com/RamblingCookieMonster/PSExcel/)
+* [ImportExcel](https://github.com/dfinke/ImportExcel)
 
 
 

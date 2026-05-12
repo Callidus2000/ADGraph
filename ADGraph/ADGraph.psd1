@@ -43,8 +43,9 @@
 
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Start-ADGraph'
+		'Get-ADGraphCache'
 		'New-ADGraph'
+		'Start-ADGraph'
 	)
 
 	# Cmdlets to export from this module

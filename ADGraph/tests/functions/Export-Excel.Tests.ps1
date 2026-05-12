@@ -17,7 +17,7 @@ Describe "Testing Get-Domain" {
                 $users = $global:MockCacheTable["users"]
             }
             else {
-                $users = Import-XLSX -Path "$PSScriptRoot\MockingData.xlsx" -Sheet "user"
+                $users = Import-Excel -Path "$PSScriptRoot\MockingData.xlsx" -WorksheetName "user"
                 foreach ($user in $users) {
                     $memberOf = $user.memberOf -split ';'
                     $memberOf = $memberOf | ForEach-Object { "CN=$_,OU=groups,DC=mydomain,DC=com" }
@@ -45,7 +45,7 @@ Describe "Testing Get-Domain" {
                 $global:MockCacheTable["groups"]
             }
             else {
-                $groups = Import-XLSX -Path $PSScriptRoot\MockingData.xlsx -Sheet "groups"
+                $groups = Import-Excel -Path $PSScriptRoot\MockingData.xlsx -WorksheetName "groups"
                 foreach ($group in $groups) {
                     $memberOf = $group.memberOf -split ';'
                     $memberOf = $memberOf | ForEach-Object {
