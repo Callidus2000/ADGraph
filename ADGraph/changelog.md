@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+## 2.0.2 (2026-05-19)
+- Fix: Remove of debugging code
+
 ## 2.0.1 (2026-05-12)
 - Fix: Edge-Creation
 

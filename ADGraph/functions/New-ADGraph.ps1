@@ -82,7 +82,6 @@ function New-ADGraph {
         $startObjects = @()
     }
     process {
-        Save-ContextCache -Name "StartObjectDN" -CurrentVariables (get-variable -Scope Local)
         Write-PSFMessage "PROCESS: DistinguishedName=$DistinguishedName"
         # $graphOptions.StartObjectDN+=$DistinguishedName
         $startObjects += ($DistinguishedName | foreach-object { $allExistingGroupsAndUsersHash[$_] })
